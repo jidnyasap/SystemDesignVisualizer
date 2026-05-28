@@ -1,4 +1,5 @@
 import { create } from "zustand"
+import { persist } from "zustand/middleware"
 import {
     Node,
     Edge,
@@ -19,29 +20,36 @@ type GraphState = {
     addNode: (type: string, label: string) => void
 }
 
-export const useGraphStore = create<GraphState>((set) => ({
-    nodes: [],
-    edges: [],
+export const useGraphStore = create<GraphState>()(
+    persist(
+        (set) => ({
+            nodes: [],
+            edges: [],
 
-    onNodesChange: (changes) =>
-        set((state) => ({ nodes: applyNodeChanges(changes, state.nodes) })),
+            onNodesChange: (changes) =>
+                set((state) => ({ nodes: applyNodeChanges(changes, state.nodes) })),
 
-    onEdgesChange: (changes) =>
-        set((state) => ({ edges: applyEdgeChanges(changes, state.edges) })),
+            onEdgesChange: (changes) =>
+                set((state) => ({ edges: applyEdgeChanges(changes, state.edges) })),
 
-    onConnect: (connection) =>
-        set((state) => ({ edges: addEdge(connection, state.edges) })),
+            onConnect: (connection) =>
+                set((state) => ({ edges: addEdge(connection, state.edges) })),
 
-    addNode: (type, label) =>
-        set((state) => ({
-            nodes: [
-                ...state.nodes,
-                {
-                    id: crypto.randomUUID(),
-                    type: "default",
-                    position: { x: Math.random() * 400, y: Math.random() * 400 },
-                    data: { label, type },
-                },
-            ],
-        })),
-}))
+            addNode: (type, label) =>
+                set((state) => ({
+                    nodes: [
+                        ...state.nodes,
+                        {
+                            id: crypto.randomUUID(),
+                            type: "default",
+                            position: { x: Math.random() * 400, y: Math.random() * 400 },
+                            data: { label, type },
+                        },
+                    ],
+                })),
+        }),
+        {
+            name: "graph-storage",
+        }
+    )
+)
