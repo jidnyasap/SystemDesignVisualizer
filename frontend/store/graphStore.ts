@@ -18,6 +18,7 @@ type GraphState = {
     onEdgesChange: (changes: EdgeChange[]) => void
     onConnect: (connection: Connection) => void
     addNode: (type: string, label: string) => void
+    clearGraph: () => void
 }
 
 export const useGraphStore = create<GraphState>()(
@@ -47,6 +48,8 @@ export const useGraphStore = create<GraphState>()(
                         },
                     ],
                 })),
+
+            clearGraph: () => set({ nodes: [], edges: [] }),
         }),
         {
             name: "graph-storage",
