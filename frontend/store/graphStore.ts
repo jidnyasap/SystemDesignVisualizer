@@ -45,6 +45,7 @@ type GraphState = {
     setSimulationResult: (result: SimulationResult | null) => void
     setIsSimulating: (value: boolean) => void
     runSimulation: () => Promise<void>
+    clearSimulation: () => void
 }
 
 export const useGraphStore = create<GraphState>()(
@@ -75,7 +76,11 @@ export const useGraphStore = create<GraphState>()(
                     ],
                 })),
 
-            clearGraph: () => set({ nodes: [], edges: [] }),
+            clearGraph: () => set({
+                nodes: [],
+                edges: [],
+                simulationResult: null
+            }),
 
             selectedNodeId: null,
 
@@ -94,7 +99,29 @@ export const useGraphStore = create<GraphState>()(
 
             isSimulating: false,
 
-            setSimulationResult: (result) => set({ simulationResult: result }),
+            setSimulationResult: (result) => {
+                if (result) {
+                    const resultMap = new Map(result.nodes.map((n) => [n.node_id, n]))
+                    set((state) => ({
+                        simulationResult: result,
+                        nodes: state.nodes.map((node) => {
+                            const nodeResult = resultMap.get(node.id)
+                            if (!nodeResult) return node
+                            return {
+                                ...node,
+                                style: {
+                                    background: nodeResult.is_bottleneck ? "#ef4444" : "#22c55e",
+                                    color: "white",
+                                    border: "none",
+                                    borderRadius: "8px",
+                                },
+                            }
+                        }),
+                    }))
+                } else {
+                    set({ simulationResult: null })
+                }
+            },
 
             setIsSimulating: (value) => set({ isSimulating: value }),
 
@@ -120,6 +147,12 @@ export const useGraphStore = create<GraphState>()(
                     setIsSimulating(false)
                 }
             },
+
+            clearSimulation: () =>
+                set((state) => ({
+                    simulationResult: null,
+                    nodes: state.nodes.map((node) => ({ ...node, style: {} })),
+                })),
         }),
         {
             name: "graph-storage",
