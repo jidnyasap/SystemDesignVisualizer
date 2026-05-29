@@ -7,6 +7,11 @@ import ReactFlow, {
 } from "reactflow"
 import "reactflow/dist/style.css"
 import { useGraphStore } from "@/store/graphStore"
+import SystemNode from "@/components/SystemNode"
+
+const nodeTypes = {
+    systemNode: SystemNode,
+}
 
 export default function Canvas() {
     const nodes = useGraphStore((state) => state.nodes)
@@ -24,8 +29,9 @@ export default function Canvas() {
                 onNodesChange={onNodesChange}
                 onEdgesChange={onEdgesChange}
                 onConnect={onConnect}
-                fitView
                 onNodeClick={(_event, node) => setSelectedNode(node.id)}
+                nodeTypes={nodeTypes}
+                fitView
             >
                 <Background />
                 <Controls />

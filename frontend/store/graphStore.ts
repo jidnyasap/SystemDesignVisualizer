@@ -69,7 +69,7 @@ export const useGraphStore = create<GraphState>()(
                         ...state.nodes,
                         {
                             id: crypto.randomUUID(),
-                            type: "default",
+                            type: "systemNode",
                             position: { x: Math.random() * 400, y: Math.random() * 400 },
                             data: { label, type },
                         },
@@ -96,32 +96,9 @@ export const useGraphStore = create<GraphState>()(
                 })),
 
             simulationResult: null,
-
             isSimulating: false,
 
-            setSimulationResult: (result) => {
-                if (result) {
-                    const resultMap = new Map(result.nodes.map((n) => [n.node_id, n]))
-                    set((state) => ({
-                        simulationResult: result,
-                        nodes: state.nodes.map((node) => {
-                            const nodeResult = resultMap.get(node.id)
-                            if (!nodeResult) return node
-                            return {
-                                ...node,
-                                style: {
-                                    background: nodeResult.is_bottleneck ? "#ef4444" : "#22c55e",
-                                    color: "white",
-                                    border: "none",
-                                    borderRadius: "8px",
-                                },
-                            }
-                        }),
-                    }))
-                } else {
-                    set({ simulationResult: null })
-                }
-            },
+            setSimulationResult: (result) => set({ simulationResult: result }),
 
             setIsSimulating: (value) => set({ isSimulating: value }),
 
