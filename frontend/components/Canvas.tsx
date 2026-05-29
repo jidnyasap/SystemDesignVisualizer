@@ -17,7 +17,7 @@ export default function Canvas() {
     const setSelectedNode = useGraphStore((state) => state.setSelectedNode)
 
     return (
-        <div style={{ width: "100%", height: "100vh" }}>
+        <div style={{ width: "100%", height: "calc(100vh - 240px)" }}>
             <ReactFlow
                 nodes={nodes}
                 edges={edges}
