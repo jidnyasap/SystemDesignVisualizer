@@ -25,6 +25,10 @@ Design any distributed system visually, configure latency and capacity per compo
 
 ## Demo
 
+![System Design Visualizer](/docs/images/demo.png)
+
+PostgreSQL is flagged as the bottleneck (119ms latency, 8.3 RPS throughput against 100 RPS incoming). All upstream nodes are healthy.
+
 ### Architecture Canvas + Simulation Results
 
 After running a simulation at 100 RPS, PostgreSQL is flagged as the bottleneck (119ms latency, only 8.3 RPS throughput against 100 RPS incoming). All upstream nodes are healthy.
